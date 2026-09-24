@@ -5,14 +5,9 @@ import (
 	"fmt"
 	"os"
 	"strings"
-)
 
-type User struct {
-	id        string
-	firstName string
-	lastName  string
-	password  string
-}
+	user "github.com/vetrivel15/luna/internal/model"
+)
 
 func main() {
 
@@ -25,11 +20,11 @@ func main() {
 		switch strings.ToLower(input) {
 
 		case "1":
-			registerNewUser()
+			register()
 		case "2":
-			loginUser()
+			login()
 		case "3":
-			deregisterUser()
+			deleteUser()
 		case "q":
 		default:
 			fmt.Println("Invalid choice")
@@ -38,23 +33,49 @@ func main() {
 	}
 }
 
-func registerNewUser() bool {
+func register() {
 	fmt.Println("Enter userid: ")
 
 	scanner := bufio.NewScanner(os.Stdin)
-
 	userId := strings.TrimSpace(scanner.Text())
 
-	if isUserExist(userId) {
+	if ok := user.IsExist(userId); !ok {
 		fmt.Println("User already exists")
-		return false
 	}
 
-	registerUser()
+	if ok, err := registeruser(userId); !ok {
+		fmt.Println(fmt.Errorf("Error registering user %v", err))
+	}
 
-	return true
 }
 
-func isUserExist(id string) bool {
-	return false
+func registeruser(id string) (bool, error) {
+
+	fmt.Println("Enter first name:")
+
+	scanner := bufio.NewScanner(os.Stdin)
+
+	firstName := strings.TrimSpace(scanner.Text())
+
+	fmt.Println("Enter last name:")
+
+	scanner = bufio.NewScanner(os.Stdin)
+
+	lastName := strings.TrimSpace(scanner.Text())
+
+	fmt.Println("Enter password")
+
+	scanner = bufio.NewScanner(os.Stdin)
+
+	password := strings.TrimSpace(scanner.Text())
+
+	return user.New(id, firstName, lastName, password)
+}
+
+func login() {
+
+}
+
+func deleteUser() {
+
 }

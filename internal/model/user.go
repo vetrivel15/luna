@@ -1,0 +1,38 @@
+package user
+
+import (
+	"errors"
+)
+
+type user struct {
+	id        string
+	firstName string
+	lastName  string
+	password  string
+}
+
+var (
+	users map[string]user
+)
+
+func New(id, firstName, lastName, password string) (bool, error) {
+
+	if IsExist(id) {
+		return false, errors.New("User already exists")
+	}
+
+	newuser := user{
+		id:        id,
+		firstName: firstName,
+		lastName:  lastName,
+		password:  password,
+	}
+
+	users[id] = newuser
+	return true, nil
+}
+
+func IsExist(id string) bool {
+	_, ok := users[id]
+	return ok
+}
