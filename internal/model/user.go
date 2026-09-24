@@ -12,7 +12,7 @@ type user struct {
 }
 
 var (
-	users map[string]user
+	users = make(map[string]user)
 )
 
 func New(id, firstName, lastName, password string) (bool, error) {

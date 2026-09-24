@@ -20,7 +20,7 @@ func main() {
 		switch strings.ToLower(input) {
 
 		case "1":
-			register()
+			register(scanner)
 		case "2":
 			login()
 		case "3":
@@ -33,39 +33,41 @@ func main() {
 	}
 }
 
-func register() {
+func register(scanner *bufio.Scanner) {
 	fmt.Println("Enter userid: ")
 
-	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
 	userId := strings.TrimSpace(scanner.Text())
 
-	if ok := user.IsExist(userId); !ok {
+	if ok := user.IsExist(userId); ok {
 		fmt.Println("User already exists")
 	}
 
-	if ok, err := registeruser(userId); !ok {
+	if ok, err := registeruser(scanner, userId); !ok {
 		fmt.Println(fmt.Errorf("Error registering user %v", err))
 	}
 
+	fmt.Println("User registeration complete")
+
 }
 
-func registeruser(id string) (bool, error) {
+func registeruser(scanner *bufio.Scanner, id string) (bool, error) {
 
 	fmt.Println("Enter first name:")
 
-	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
 
 	firstName := strings.TrimSpace(scanner.Text())
 
 	fmt.Println("Enter last name:")
 
-	scanner = bufio.NewScanner(os.Stdin)
+	scanner.Scan()
 
 	lastName := strings.TrimSpace(scanner.Text())
 
 	fmt.Println("Enter password")
 
-	scanner = bufio.NewScanner(os.Stdin)
+	scanner.Scan()
 
 	password := strings.TrimSpace(scanner.Text())
 
