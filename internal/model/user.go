@@ -36,3 +36,34 @@ func IsExist(id string) bool {
 	_, ok := users[id]
 	return ok
 }
+
+func Login(id, password string) (bool, error) {
+
+	allUsers, exists := users[id]
+
+	if !exists {
+		return false, errors.New("User not found")
+	}
+
+	if allUsers.password != password {
+		return false, errors.New("wrong password")
+	}
+
+	return true, nil
+}
+
+func Delete(id, password string) (bool, error) {
+	allUsers, exists := users[id]
+
+	if !exists {
+		return false, errors.New("User not found")
+	}
+
+	if allUsers.password != password {
+		return false, errors.New("wrong password")
+	}
+
+	delete(users, id)
+
+	return true, nil
+}

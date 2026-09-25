@@ -11,25 +11,35 @@ import (
 
 func main() {
 
-	fmt.Println("Enter your choice.\n1: Register\n2: Login\n3: Deactivate user\nQ: Quit")
 	scanner := bufio.NewScanner(os.Stdin)
 
-	if scanner.Scan() {
+	for {
+		fmt.Println("\nEnter your choice")
+		fmt.Println("1: Register")
+		fmt.Println("2: Login")
+		fmt.Println("3: Deactivate user")
+		fmt.Println("Q: Quit")
+
+		if !scanner.Scan() {
+			break
+		}
 
 		input := strings.TrimSpace(scanner.Text())
+
 		switch strings.ToLower(input) {
 
 		case "1":
 			register(scanner)
 		case "2":
-			login()
+			login(scanner)
 		case "3":
-			deleteUser()
+			deleteUser(scanner)
 		case "q":
+			fmt.Println("Exiting application...")
+			os.Exit(0)
 		default:
 			fmt.Println("Invalid choice")
 		}
-
 	}
 }
 
@@ -38,20 +48,6 @@ func register(scanner *bufio.Scanner) {
 
 	scanner.Scan()
 	userId := strings.TrimSpace(scanner.Text())
-
-	if ok := user.IsExist(userId); ok {
-		fmt.Println("User already exists")
-	}
-
-	if ok, err := registeruser(scanner, userId); !ok {
-		fmt.Println(fmt.Errorf("Error registering user %v", err))
-	}
-
-	fmt.Println("User registeration complete")
-
-}
-
-func registeruser(scanner *bufio.Scanner, id string) (bool, error) {
 
 	fmt.Println("Enter first name:")
 
@@ -71,13 +67,48 @@ func registeruser(scanner *bufio.Scanner, id string) (bool, error) {
 
 	password := strings.TrimSpace(scanner.Text())
 
-	return user.New(id, firstName, lastName, password)
+	if ok, err := user.New(userId, firstName, lastName, password); !ok {
+		fmt.Printf("Failed user registeration %v", err)
+		return
+	}
+
+	fmt.Println("User registeration complete")
 }
 
-func login() {
+func login(scanner *bufio.Scanner) {
+	fmt.Println("\nLogin")
+	fmt.Println("Enter userid: ")
 
+	scanner.Scan()
+	userId := strings.TrimSpace(scanner.Text())
+
+	fmt.Println("Enter password")
+	scanner.Scan()
+	password := strings.TrimSpace(scanner.Text())
+
+	if ok, err := user.Login(userId, password); !ok {
+		fmt.Printf("User login failed: %v", err)
+		return
+	}
+
+	fmt.Println("User login complete")
 }
 
-func deleteUser() {
+func deleteUser(scanner *bufio.Scanner) {
+	fmt.Printf("\nDelete user")
 
+	fmt.Println("Enter userid: ")
+	scanner.Scan()
+	userid := strings.TrimSpace(scanner.Text())
+
+	fmt.Println("Enter password: ")
+	scanner.Scan()
+	password := strings.TrimSpace(scanner.Text())
+
+	if ok, err := user.Delete(userid, password); !ok {
+		fmt.Printf("Delete user failed: %v", err)
+		return
+	}
+
+	fmt.Println("Delete user complete")
 }
